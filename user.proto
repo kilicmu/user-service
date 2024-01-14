@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/kilicmu/user-service";
+
+message LoginReq {
+  string name_or_phone_or_email = 1;
+  string password = 2;
+}
+message AccessTokenPair {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+message UserInfoReq{
+  string access_token = 1;
+}
+
+message UserInfoDTO {
+  string uid = 1;
+  string name = 2;
+  string phone = 4;
+  string email = 5;
+  bool email_verified = 6;
+  string channel = 7;
+  string identify = 8;
+  string picture = 9;
+}
+
+message UpdatableUserInfo {
+  string uid = 1;
+  string name = 2;
+  string phone = 4;
+  string email = 5;
+  string picture = 6;
+  string password = 7;
+}
+
+message RegisterUserReq {
+  string email = 1;
+  string password = 2;
+}
+
+message ResultDTO {
+  bool is_success = 1;
+}
+
+message GoogleOAuthGetAccessTokenReq {
+  string code = 1;
+}
+
+message GoogleOAuthGetAccessResp {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message VarifyTokenReq {
+  string access_token = 1;
+}
+
+message VarifyTokenResp {
+  bool is_alive = 1;
+}
+
+message RefreshTokenReq {
+  string refresh_token = 1;
+}
+
+service UserService{
+  rpc Login (LoginReq) returns (AccessTokenPair);
+  rpc RegisterUser(RegisterUserReq) returns (UserInfoDTO);
+  rpc GetUserInfo (UserInfoReq) returns (UserInfoDTO);
+  rpc UpdateUserInfo(UpdatableUserInfo) returns (UserInfoDTO);
+  rpc GoogleOAuthGetAccessToken(GoogleOAuthGetAccessTokenReq) returns (GoogleOAuthGetAccessResp);
+  rpc VarifyToken(VarifyTokenReq) returns (VarifyTokenResp);
+  rpc RefreshToken(RefreshTokenReq) returns (GoogleOAuthGetAccessResp);
+}
